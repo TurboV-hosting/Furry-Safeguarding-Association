@@ -105,8 +105,8 @@
 
         .team-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
             text-align: center;
         }
 
@@ -115,14 +115,20 @@
             padding: 20px;
             border-radius: 15px;
             border: 1px solid #e94560;
+            transition: border-color 0.3s;
+        }
+
+        .team-member:hover {
+            border-color: #ffffff;
         }
 
         .team-member img {
-            width: 100px;
-            height: 100px;
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
             margin-bottom: 10px;
             background-color: #0f3460;
+            object-fit: cover;
         }
 
         /* Footer */
@@ -194,29 +200,57 @@
 
         <hr style="border: 0.5px solid #333; margin: 50px 0;">
 
-        <!-- Meet the Team Section -->
+        <!-- Meet the Team Section - Updated for 8 Members -->
         <section id="team">
             <h2 style="text-align: center; margin-bottom: 40px;">Meet the Team</h2>
             <div class="team-grid">
+                <!-- Member 1 -->
                 <div class="team-member">
-                    <img src="https://via.placeholder.com/100" alt="Admin">
+                    <img src="https://via.placeholder.com/100" alt="Cozzy">
                     <h3>Cozzy</h3>
                     <p>Lead Investigator</p>
                 </div>
+                <!-- Member 2 -->
                 <div class="team-member">
-                    <img src="https://via.placeholder.com/100" alt="Moderator">
+                    <img src="https://via.placeholder.com/100" alt="Nova">
                     <h3>Nova The Derg</h3>
                     <p>Team Member</p>
                 </div>
+                <!-- Member 3 -->
                 <div class="team-member">
-                    <img src="https://via.placeholder.com/100" alt="Tech">
+                    <img src="https://via.placeholder.com/100" alt="Dimka">
                     <h3>DimkaTA-A3</h3>
                     <p>Team Member</p>
                 </div>
+                <!-- Member 4 -->
                 <div class="team-member">
-                    <img src="https://via.placeholder.com/100" alt="Legal">
+                    <img src="https://via.placeholder.com/100" alt="Savannah">
                     <h3>Savannah</h3>
                     <p>Team Member</p>
+                </div>
+                <!-- Member 5 -->
+                <div class="team-member">
+                    <img src="https://via.placeholder.com/100" alt="Staff">
+                    <h3>Team Member</h3>
+                    <p>FSA Staff</p>
+                </div>
+                <!-- Member 6 -->
+                <div class="team-member">
+                    <img src="https://via.placeholder.com/100" alt="Staff">
+                    <h3>Team Member</h3>
+                    <p>FSA Staff</p>
+                </div>
+                <!-- Member 7 -->
+                <div class="team-member">
+                    <img src="https://via.placeholder.com/100" alt="Staff">
+                    <h3>Team Member</h3>
+                    <p>FSA Staff</p>
+                </div>
+                <!-- Member 8 -->
+                <div class="team-member">
+                    <img src="https://via.placeholder.com/100" alt="Staff">
+                    <h3>Team Member</h3>
+                    <p>FSA Staff</p>
                 </div>
             </div>
         </section>
