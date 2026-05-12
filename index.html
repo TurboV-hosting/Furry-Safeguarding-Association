@@ -199,8 +199,36 @@
         footer {
             background: #0f3460;
             text-align: center;
-            padding: 20px;
+            padding: 30px 20px;
             margin-top: 40px;
+        }
+
+        /* --- WATERMARK STYLE --- */
+        .turbov-watermark {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .turbov-watermark:hover {
+            opacity: 1;
+        }
+
+        .turbov-watermark a {
+            display: flex;
+            align-items: center;
+            color: #e0e0e0;
+            text-decoration: none;
+            gap: 10px;
+        }
+
+        .turbov-watermark img {
+            height: 24px;
+            width: auto;
         }
     </style>
 </head>
@@ -287,6 +315,13 @@
 
     <footer>
         <p>&copy; 2026 Furry Safeguarding Association. All Rights Reserved.</p>
+        
+        <div class="turbov-watermark">
+            <a href="https://www.turbov.dev/" target="_blank">
+                <img src="logo.png" alt="TurboV Logo">
+                <span>this website was made by TurboV</span>
+            </a>
+        </div>
     </footer>
 
     <script type="module">
