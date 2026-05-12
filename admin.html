@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FSA Admin Panel | Internal Management</title>
     <style>
-        /* Reusing Site Colors */
         :root {
             --bg-dark: #1a1a2e;
             --bg-nav: #0f3460;
@@ -23,7 +22,6 @@
             min-height: 100vh;
         }
 
-        /* Sidebar Navigation */
         aside {
             width: 240px;
             background: var(--bg-nav);
@@ -53,11 +51,8 @@
             transition: background 0.3s;
         }
 
-        aside nav a:hover, aside nav a.active {
-            background: var(--accent);
-        }
+        aside nav a:hover, aside nav a.active { background: var(--accent); }
 
-        /* Main Content Area */
         main {
             margin-left: 280px;
             padding: 40px;
@@ -71,7 +66,6 @@
             margin-bottom: 30px;
         }
 
-        /* Statistics Cards */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -89,14 +83,10 @@
             transition: transform 0.2s;
         }
 
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-
+        .stat-card:hover { transform: translateY(-5px); }
         .stat-card h3 { margin: 0; font-size: 0.8rem; color: #888; text-transform: uppercase; }
         .stat-card p { font-size: 2rem; font-weight: bold; margin: 10px 0 0; }
 
-        /* Tables and Forms */
         .admin-section {
             background: var(--bg-card);
             padding: 25px;
@@ -124,9 +114,9 @@
             font-size: 0.8rem;
             background: #ff9800;
             color: black;
+            font-weight: bold;
         }
 
-        /* Form Elements */
         .btn {
             background: var(--accent);
             color: white;
@@ -139,7 +129,7 @@
 
         .btn-sm { padding: 5px 10px; font-size: 0.8rem; }
 
-        input, select, textarea {
+        input {
             background: #0f3460;
             border: 1px solid #333;
             color: white;
@@ -157,16 +147,14 @@
         <nav>
             <a href="admin.html" class="active">Dashboard</a>
             <a href="reports.html">Pending Reports</a>
-            <a href="#" style="margin-top: 50px; border: 1px solid var(--accent);">View Live Site</a>
+            <a href="/" style="margin-top: 50px; border: 1px solid var(--accent);">View Live Site</a>
         </nav>
     </aside>
 
     <main>
         <div class="header-bar">
             <h1>System Dashboard</h1>
-            <div>
-                <span>Welcome back, <strong>Emma</strong></span>
-            </div>
+            <span>Welcome back, <strong>Emma</strong></span>
         </div>
 
         <div class="stats-grid">
@@ -189,7 +177,7 @@
         </div>
 
         <div class="admin-section">
-            <h2>Recent Submissions</h2>
+            <h2>Recent Pending Submissions</h2>
             <table>
                 <thead>
                     <tr>
@@ -222,7 +210,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyD5OjSypVv3dNki_RhEK07odHqVwg_arrg",
@@ -239,5 +227,55 @@
 
         // --- 1. LIVE STATS COUNTERS ---
         
-        // Pending Count (The new collection you're working on)
-        onSnapshot(collection(db, "pending"), (snap
+        // Count from "pending"
+        onSnapshot(collection(db, "pending"), (snap) => {
+            document.getElementById('stat-pending').innerText = snap.size;
+        });
+
+        // Count from "reports" (Full history)
+        onSnapshot(collection(db, "reports"), (snap) => {
+            document.getElementById('stat-reports').innerText = snap.size;
+        });
+
+        // Count from "blacklist"
+        onSnapshot(collection(db, "blacklist"), (snap) => {
+            document.getElementById('stat-blacklist').innerText = snap.size;
+        });
+
+        // Count from "team"
+        onSnapshot(collection(db, "team"), (snap) => {
+            document.getElementById('stat-team').innerText = snap.size;
+        });
+
+        // --- 2. LIVE PENDING TABLE (Limited to latest 5) ---
+        const reportsTable = document.getElementById('live-reports-table');
+        
+        // Logic: Pull from "pending" collection to show what needs review
+        const pendingQuery = query(collection(db, "pending"), limit(5));
+
+        onSnapshot(pendingQuery, (snapshot) => {
+            if (snapshot.empty) {
+                reportsTable.innerHTML = `<tr><td colspan="5" style="text-align: center;">No pending reports at this time.</td></tr>`;
+                return;
+            }
+
+            reportsTable.innerHTML = ""; 
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                const date = data.timestamp ? data.timestamp.toDate().toLocaleDateString() : "New";
+                
+                reportsTable.innerHTML += `
+                    <tr>
+                        <td>${date}</td>
+                        <td><strong>${data.subjectName || 'Unknown'}</strong></td>
+                        <td>${data.category || 'General'}</td>
+                        <td><span class="status-pill">AWAITING REVIEW</span></td>
+                        <td><button class="btn btn-sm" onclick="window.location.href='reports.html'">Process Case</button></td>
+                    </tr>
+                `;
+            });
+        });
+
+    </script>
+</body>
+</html>
