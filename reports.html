@@ -163,15 +163,13 @@
             <span>Reviewing as <strong>Emma</strong></span>
         </div>
 
-        <!-- Detail View Section -->
         <div id="detail-view" class="admin-section">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <h2 id="detail-title">Report Details</h2>
                 <button class="btn" onclick="document.getElementById('detail-view').style.display='none'">Close Detail</button>
             </div>
             <div id="detail-content">
-                <!-- All Firebase fields will be injected here -->
-            </div>
+                </div>
         </div>
 
         <div class="admin-section">
@@ -196,7 +194,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, query } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyD5OjSypVv3dNki_RhEK07odHqVwg_arrg",
@@ -222,35 +220,39 @@
 
             // Loop through every key in the document
             for (const [key, value] of Object.entries(data)) {
-                if (key === 'evidencePhotos' && Array.isArray(value)) {
-                    let imagesHtml = value.map(url => `<a href="${url}" target="_blank"><img src="${url}" class="evidence-img"></a>`).join('');
-                    container.innerHTML += `
-                        <div class="data-row">
-                            <div class="data-label">${key}:</div>
-                            <div class="data-value">${imagesHtml}</div>
-                        </div>`;
+                let displayContent = "";
+
+                if (key === 'evidencePhotos') {
+                    // Check if value is an array or a single string link
+                    if (Array.isArray(value)) {
+                        displayContent = value.map(url => `<a href="${url}" target="_blank"><img src="${url}" class="evidence-img"></a>`).join('');
+                    } else if (typeof value === 'string' && value.startsWith('http')) {
+                        displayContent = `<a href="${value}" target="_blank"><img src="${value}" class="evidence-img"></a>`;
+                    } else {
+                        displayContent = value || "None provided";
+                    }
                 } else {
                     // Handle timestamps vs strings
-                    let displayValue = value;
-                    if (value && typeof value === 'object' && value.seconds) {
-                        displayValue = new Date(value.seconds * 1000).toLocaleString();
-                    }
-                    
-                    container.innerHTML += `
-                        <div class="data-row">
-                            <div class="data-label">${key}:</div>
-                            <div class="data-value">${displayValue}</div>
-                        </div>`;
+                    displayContent = (value && typeof value === 'object' && value.seconds) 
+                        ? new Date(value.seconds * 1000).toLocaleString() 
+                        : (value || "N/A");
                 }
+
+                container.innerHTML += `
+                    <div class="data-row">
+                        <div class="data-label">${key}:</div>
+                        <div class="data-value">${displayContent}</div>
+                    </div>`;
             }
 
             view.style.display = 'block';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
-        // Listen specifically to the "pending" collection
         const reportsList = document.getElementById('pending-reports-list');
-        const q = query(collection(db, "pending"), orderBy("timestamp", "desc"));
+        
+        // Removed orderBy("timestamp") so documents show up even if the field is missing
+        const q = query(collection(db, "pending"));
 
         onSnapshot(q, (snapshot) => {
             if (snapshot.empty) {
@@ -261,10 +263,9 @@
             reportsList.innerHTML = "";
             snapshot.forEach((doc) => {
                 const data = doc.data();
-                const date = data.timestamp ? data.timestamp.toDate().toLocaleDateString() : "N/A";
+                const date = data.timestamp ? data.timestamp.toDate().toLocaleDateString() : "No Date";
                 const priorityClass = data.priority === 'High' ? 'high' : 'med';
                 
-                // Stringify data to pass into the function
                 const dataString = encodeURIComponent(JSON.stringify(data));
 
                 reportsList.innerHTML += `
