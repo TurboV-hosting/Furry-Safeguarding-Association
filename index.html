@@ -39,9 +39,7 @@
             transition: color 0.3s;
         }
 
-        nav a:hover {
-            color: #e94560;
-        }
+        nav a:hover { color: #e94560; }
 
         .container {
             max-width: 1100px;
@@ -50,7 +48,6 @@
             padding: 0 2rem;
         }
 
-        /* Hero Section */
         #hero {
             padding: 60px 0;
             text-align: center;
@@ -66,7 +63,6 @@
             margin-bottom: 10px;
         }
 
-        /* Mission Section */
         .mission-box {
             background: #16213e;
             padding: 30px;
@@ -90,19 +86,10 @@
             transition: transform 0.3s;
         }
 
-        .card:hover {
-            transform: translateY(-5px);
-        }
+        .card:hover { transform: translateY(-5px); }
+        .card h3 { color: #e94560; }
 
-        .card h3 {
-            color: #e94560;
-        }
-
-        /* Team Section */
-        #team {
-            padding: 40px 0;
-        }
-
+        #team { padding: 40px 0; }
         .team-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -118,9 +105,7 @@
             transition: border-color 0.3s;
         }
 
-        .team-member:hover {
-            border-color: #ffffff;
-        }
+        .team-member:hover { border-color: #ffffff; }
 
         .team-member img {
             width: 80px;
@@ -131,14 +116,6 @@
             object-fit: cover;
         }
 
-        /* Footer */
-        footer {
-            background: #0f3460;
-            text-align: center;
-            padding: 20px;
-            margin-top: 40px;
-        }
-
         .alert {
             background: #721c24;
             color: #f8d7da;
@@ -147,6 +124,80 @@
             margin-bottom: 20px;
             text-align: center;
             font-weight: bold;
+        }
+
+        /* --- OVERLAY STYLES --- */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .overlay-content {
+            background: #16213e;
+            padding: 40px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            border: 2px solid #e94560;
+            box-shadow: 0 0 30px rgba(233, 69, 96, 0.2);
+            position: relative;
+        }
+
+        .overlay-content h2 { color: #e94560; margin-top: 0; }
+        
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: bold; }
+        
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            background: #0f3460;
+            border: 1px solid #333;
+            color: white;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        .note { font-size: 0.85rem; color: #888; margin-top: 5px; }
+        .req-note { color: #e94560; font-weight: bold; }
+
+        .btn-report {
+            background: #e94560;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            font-size: 1.1rem;
+        }
+
+        .close-overlay {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        footer {
+            background: #0f3460;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
         }
     </style>
 </head>
@@ -161,14 +212,13 @@
         <a href="#about">About Us</a>
         <a href="#focus">Our Focus</a>
         <a href="#team">The Team</a>
-        <a href="#report">How to Report</a>
+        <a href="javascript:void(0)" onclick="openOverlay()" style="background: #e94560; border-radius: 5px; padding: 5px 15px;">REPORT NOW</a>
     </nav>
 
     <div class="container">
-        
         <section id="hero">
             <h2>Integrity Through Vigilance</h2>
-            <p>We are a dedicated collective focused on identifying and exposing bad actors within the furry community to ensure a safer environment for everyone.</p>
+            <p>Ensuring a safer environment through transparency and verification.</p>
         </section>
 
         <div class="alert">
@@ -177,92 +227,111 @@
 
         <section id="about" class="mission-box">
             <h2>Our Mission</h2>
-            <p>The Furry Safeguarding Association (FSA) was founded to act as a shield for the community. We believe that transparency is the best deterrent against those who wish to harm or exploit others. Our goal is to provide a central hub for vetted information regarding individuals who pose a threat to the safety and well-being of the fandom.</p>
+            <p>The Furry Safeguarding Association (FSA) was founded to act as a shield for the community. We believe that transparency is the best deterrent against those who wish to harm or exploit others.</p>
         </section>
 
         <section id="focus">
             <h2 style="text-align: center;">What We Monitor</h2>
             <div class="grid">
-                <div class="card">
-                    <h3>Predatory Behavior</h3>
-                    <p>Documenting and exposing individuals involved in grooming or predatory actions against minors.</p>
-                </div>
-                <div class="card">
-                    <h3>Zoophilia</h3>
-                    <p>Maintaining a strict stance against animal abuse and those who promote or engage in "zoo" content.</p>
-                </div>
-                <div class="card">
-                    <h3>Hate & Racism</h3>
-                    <p>Exposing groups or individuals spreading white supremacy, racism, or organized hate within the fandom.</p>
-                </div>
+                <div class="card"><h3>Predatory Behavior</h3><p>Documenting threats to minors.</p></div>
+                <div class="card"><h3>Zoophilia</h3><p>Strict stance against animal abuse.</p></div>
+                <div class="card"><h3>Hate & Racism</h3><p>Exposing organized hate.</p></div>
             </div>
         </section>
-
-        <hr style="border: 0.5px solid #333; margin: 50px 0;">
 
         <section id="team">
             <h2 style="text-align: center; margin-bottom: 40px;">Meet the Team</h2>
             <div class="team-grid">
-                <div class="team-member">
-                    <img src="https://via.placeholder.com/100" alt="Cozzy">
-                    <h3>Cozzy</h3>
-                    <p>Lead Investigator</p>
-                </div>
-                <div class="team-member">
-                    <img src="https://via.placeholder.com/100" alt="Nova">
-                    <h3>Nova The Derg</h3>
-                    <p>Team Member</p>
-                </div>
-                <div class="team-member">
-                    <img src="https://via.placeholder.com/100" alt="Dimka">
-                    <h3>DimkaTA-A3</h3>
-                    <p>Team Member</p>
-                </div>
-                <div class="team-member">
-                    <img src="https://via.placeholder.com/100" alt="Savannah">
-                    <h3>Savannah</h3>
-                    <p>Team Member</p>
-                </div>
-                <div class="team-member">
-                    <img src="https://via.placeholder.com/100" alt="smudge">
-                    <h3>smudge</h3>
-                    <p>Team Member</p>
-                </div>
-                <div class="team-member">
-                    <img src="https://via.placeholder.com/100" alt="kanis">
-                    <h3>kanis</h3>
-                    <p>Team Member</p>
-                </div>
-                <div class="team-member">
-                    <img src="https://via.placeholder.com/100" alt="Nova Voidwalker">
-                    <h3>Nova Voidwalker</h3>
-                    <p>Team Member</p>
-                </div>
-                <div class="team-member">
-                    <img src="https://via.placeholder.com/100" alt="sierra">
-                    <h3>sierra</h3>
-                    <p>Team Member</p>
-                </div>
-                <div class="team-member">
-                    <img src="https://via.placeholder.com/100" alt="Staff">
-                    <h3>Emma</h3>
-                    <p>Web dev/design &Cybersecerity</p>
-                </div>
+                <div class="team-member"><img src="https://via.placeholder.com/100" alt="Cozzy"><h3>Cozzy</h3><p>Lead Investigator</p></div>
+                <div class="team-member"><img src="https://via.placeholder.com/100" alt="Nova"><h3>Nova The Derg</h3><p>Team Member</p></div>
+                <div class="team-member"><img src="https://via.placeholder.com/100" alt="Emma"><h3>Emma</h3><p>Dev & Security</p></div>
             </div>
         </section>
+    </div>
 
-        <section id="report" class="mission-box" style="text-align: center;">
-            <h2>Submit a Report</h2>
-            <p>Do you have verified evidence or information regarding a safety threat? Contact our secure intake team. All reports are handled with strict confidentiality and vetted for accuracy before any action is taken.</p>
-            <button style="background: #e94560; color: white; padding: 12px 25px; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem;">Open Secure Portal</button>
-        </section>
+    <div id="reportOverlay" class="overlay">
+        <div class="overlay-content">
+            <button class="close-overlay" onclick="closeOverlay()">&times;</button>
+            <h2>Submit Secure Report</h2>
+            <p class="note" style="margin-bottom: 20px;">We recommend leaving a <strong>Discord or X.com username</strong> so we can contact you for extra evidence if needed.</p>
+            
+            <form id="reportForm">
+                <div class="form-group">
+                    <label>Subject Name/Alias</label>
+                    <input type="text" id="subjectName" placeholder="Who are you reporting?" required>
+                </div>
 
+                <div class="form-group">
+                    <label>Description of Incident</label>
+                    <textarea id="description" rows="4" placeholder="Explain the situation clearly..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Evidence Photos (Links Only)</label>
+                    <input type="text" id="evidencePhotos" placeholder="Paste Imgur/ImgBB links here..." required>
+                    <p class="note req-note">Requires the link to the photos or it won't appear in the review.</p>
+                </div>
+
+                <div class="form-group">
+                    <label>Contact Info (Optional)</label>
+                    <input type="text" id="contactInfo" placeholder="Your Discord or X handle">
+                </div>
+
+                <button type="submit" class="btn-report">Send to FSA Intake</button>
+            </form>
+        </div>
     </div>
 
     <footer>
         <p>&copy; 2026 Furry Safeguarding Association. All Rights Reserved.</p>
-        <p style="font-size: 0.8rem; color: #888;">FSA is an independent watchdog group. Always contact local authorities for immediate emergencies.</p>
     </footer>
 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD5OjSypVv3dNki_RhEK07odHqVwg_arrg",
+            authDomain: "furry-872b4.firebaseapp.com",
+            projectId: "furry-872b4",
+            storageBucket: "furry-872b4.firebasestorage.app",
+            messagingSenderId: "185088460549",
+            appId: "1:185088460549:web:864af7c15cc21d2dd3996c",
+            measurementId: "G-HC23XV9J99"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // UI Logic
+        window.openOverlay = () => document.getElementById('reportOverlay').style.display = 'flex';
+        window.closeOverlay = () => document.getElementById('reportOverlay').style.display = 'none';
+
+        // Submit Logic
+        const form = document.getElementById('reportForm');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const reportData = {
+                subjectName: document.getElementById('subjectName').value,
+                description: document.getElementById('description').value,
+                evidencePhotos: document.getElementById('evidencePhotos').value,
+                contactInfo: document.getElementById('contactInfo').value,
+                status: "Pending Review",
+                timestamp: serverTimestamp()
+            };
+
+            try {
+                // SAVING TO THE PENDING COLLECTION
+                await addDoc(collection(db, "pending"), reportData);
+                alert("Report submitted successfully. Our team will review the evidence.");
+                form.reset();
+                closeOverlay();
+            } catch (error) {
+                console.error("Error submitting report: ", error);
+                alert("Error sending report. Please try again later.");
+            }
+        });
+    </script>
 </body>
 </html>
