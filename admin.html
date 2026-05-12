@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -170,15 +169,15 @@
         <div class="stats-grid">
             <div class="stat-card">
                 <h3>NEW REPORTS</h3>
-                <p>12</p>
+                <p id="stat-reports">0</p>
             </div>
             <div class="stat-card">
                 <h3>BLACKLISTED</h3>
-                <p>142</p>
+                <p id="stat-blacklist">0</p>
             </div>
             <div class="stat-card">
                 <h3>TEAM MEMBERS</h3>
-                <p>9</p>
+                <p id="stat-team">0</p>
             </div>
             <div class="stat-card">
                 <h3>UPTIME</h3>
@@ -198,20 +197,10 @@
                         <th>Action</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="live-reports-table">
+                    <!-- Data injected by Firebase -->
                     <tr>
-                        <td>2026-05-12</td>
-                        <td>User_X</td>
-                        <td>Predatory Behavior</td>
-                        <td><span class="status-pill">Pending Review</span></td>
-                        <td><button class="btn btn-sm">View Files</button></td>
-                    </tr>
-                    <tr>
-                        <td>2026-05-11</td>
-                        <td>Account_Y</td>
-                        <td>Racism/Hate</td>
-                        <td><span class="status-pill" style="background:#4caf50;">Investigating</span></td>
-                        <td><button class="btn btn-sm">View Files</button></td>
+                        <td colspan="5" style="text-align: center; color: #888;">Loading reports...</td>
                     </tr>
                 </tbody>
             </table>
@@ -222,12 +211,75 @@
             <p>This changes the red notice bar on the main page.</p>
             <form onsubmit="return false;">
                 <label>Alert Message</label>
-                <input type="text" value="Notice: We maintain a zero-tolerance policy for illegal or predatory behavior.">
+                <input type="text" id="site-alert-input" value="Notice: We maintain a zero-tolerance policy for illegal or predatory behavior.">
                 <br><br>
                 <button class="btn">Update Site Alert</button>
             </form>
         </div>
     </main>
 
+    <!-- FIREBASE INTEGRATION -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD5OjSypVv3dNki_RhEK07odHqVwg_arrg",
+            authDomain: "furry-872b4.firebaseapp.com",
+            projectId: "furry-872b4",
+            storageBucket: "furry-872b4.firebasestorage.app",
+            messagingSenderId: "185088460549",
+            appId: "1:185088460549:web:864af7c15cc21d2dd3996c",
+            measurementId: "G-HC23XV9J99"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // --- 1. LIVE STATS COUNTERS ---
+        
+        // Reports Count
+        onSnapshot(collection(db, "reports"), (snap) => {
+            document.getElementById('stat-reports').innerText = snap.size;
+        });
+
+        // Blacklist Count
+        onSnapshot(collection(db, "blacklist"), (snap) => {
+            document.getElementById('stat-blacklist').innerText = snap.size;
+        });
+
+        // Team Count
+        onSnapshot(collection(db, "team"), (snap) => {
+            document.getElementById('stat-team').innerText = snap.size;
+        });
+
+        // --- 2. LIVE REPORTS TABLE ---
+        const reportsTable = document.getElementById('live-reports-table');
+        const reportsQuery = query(collection(db, "reports"), orderBy("timestamp", "desc"));
+
+        onSnapshot(reportsQuery, (snapshot) => {
+            if (snapshot.empty) {
+                reportsTable.innerHTML = `<tr><td colspan="5" style="text-align: center;">No reports found.</td></tr>`;
+                return;
+            }
+
+            reportsTable.innerHTML = ""; 
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                const date = data.timestamp ? data.timestamp.toDate().toLocaleDateString() : "N/A";
+                
+                reportsTable.innerHTML += `
+                    <tr>
+                        <td>${date}</td>
+                        <td>${data.subjectName || 'Unknown'}</td>
+                        <td>${data.category || 'General'}</td>
+                        <td><span class="status-pill">${data.status || 'Pending'}</span></td>
+                        <td><button class="btn btn-sm">View Files</button></td>
+                    </tr>
+                `;
+            });
+        });
+
+    </script>
 </body>
 </html>
