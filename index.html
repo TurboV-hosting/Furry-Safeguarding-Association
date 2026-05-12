@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Furry Safeguarding Association | Protecting Our Community</title>
+    
+    <link rel="icon" type="image/png" href="FSA.png">
+
     <style>
         /* General Styles */
         body {
@@ -322,7 +325,6 @@
             };
 
             try {
-                // SAVING TO THE PENDING COLLECTION
                 await addDoc(collection(db, "pending"), reportData);
                 alert("Report submitted successfully. Our team will review the evidence.");
                 form.reset();
