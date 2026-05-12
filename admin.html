@@ -85,9 +85,15 @@
             border-radius: 10px;
             text-align: center;
             border-top: 3px solid var(--accent);
+            cursor: pointer;
+            transition: transform 0.2s;
         }
 
-        .stat-card h3 { margin: 0; font-size: 0.9rem; color: #888; }
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card h3 { margin: 0; font-size: 0.8rem; color: #888; text-transform: uppercase; }
         .stat-card p { font-size: 2rem; font-weight: bold; margin: 10px 0 0; }
 
         /* Tables and Forms */
@@ -149,9 +155,9 @@
     <aside>
         <h2>FSA ADMIN</h2>
         <nav>
-            <a href="#" class="active">Dashboard</a>
-            <a href="#">Pending Reports</a>
-            <a href="/" style="margin-top: 50px; border: 1px solid var(--accent);">View Live Site</a>
+            <a href="admin.html" class="active">Dashboard</a>
+            <a href="reports.html">Pending Reports</a>
+            <a href="#" style="margin-top: 50px; border: 1px solid var(--accent);">View Live Site</a>
         </nav>
     </aside>
 
@@ -164,8 +170,12 @@
         </div>
 
         <div class="stats-grid">
+            <div class="stat-card" onclick="window.location.href='reports.html'">
+                <h3>PENDING QUEUE</h3>
+                <p id="stat-pending" style="color: var(--accent);">0</p>
+            </div>
             <div class="stat-card">
-                <h3>NEW REPORTS</h3>
+                <h3>TOTAL REPORTS</h3>
                 <p id="stat-reports">0</p>
             </div>
             <div class="stat-card">
@@ -175,10 +185,6 @@
             <div class="stat-card">
                 <h3>TEAM MEMBERS</h3>
                 <p id="stat-team">0</p>
-            </div>
-            <div class="stat-card">
-                <h3>UPTIME</h3>
-                <p>99.9%</p>
             </div>
         </div>
 
@@ -195,7 +201,6 @@
                     </tr>
                 </thead>
                 <tbody id="live-reports-table">
-                    <!-- Data injected by Firebase -->
                     <tr>
                         <td colspan="5" style="text-align: center; color: #888;">Loading reports...</td>
                     </tr>
@@ -215,7 +220,6 @@
         </div>
     </main>
 
-    <!-- FIREBASE INTEGRATION -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -235,48 +239,5 @@
 
         // --- 1. LIVE STATS COUNTERS ---
         
-        // Reports Count
-        onSnapshot(collection(db, "reports"), (snap) => {
-            document.getElementById('stat-reports').innerText = snap.size;
-        });
-
-        // Blacklist Count
-        onSnapshot(collection(db, "blacklist"), (snap) => {
-            document.getElementById('stat-blacklist').innerText = snap.size;
-        });
-
-        // Team Count
-        onSnapshot(collection(db, "team"), (snap) => {
-            document.getElementById('stat-team').innerText = snap.size;
-        });
-
-        // --- 2. LIVE REPORTS TABLE ---
-        const reportsTable = document.getElementById('live-reports-table');
-        const reportsQuery = query(collection(db, "reports"), orderBy("timestamp", "desc"));
-
-        onSnapshot(reportsQuery, (snapshot) => {
-            if (snapshot.empty) {
-                reportsTable.innerHTML = `<tr><td colspan="5" style="text-align: center;">No reports found.</td></tr>`;
-                return;
-            }
-
-            reportsTable.innerHTML = ""; 
-            snapshot.forEach((doc) => {
-                const data = doc.data();
-                const date = data.timestamp ? data.timestamp.toDate().toLocaleDateString() : "N/A";
-                
-                reportsTable.innerHTML += `
-                    <tr>
-                        <td>${date}</td>
-                        <td>${data.subjectName || 'Unknown'}</td>
-                        <td>${data.category || 'General'}</td>
-                        <td><span class="status-pill">${data.status || 'Pending'}</span></td>
-                        <td><button class="btn btn-sm">View Files</button></td>
-                    </tr>
-                `;
-            });
-        });
-
-    </script>
-</body>
-</html>
+        // Pending Count (The new collection you're working on)
+        onSnapshot(collection(db, "pending"), (snap
